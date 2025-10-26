@@ -12,6 +12,7 @@ import globals
 
 
 
+
 async def start_handler(update, context):
     await check(update, context)
 
