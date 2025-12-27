@@ -29,35 +29,56 @@ async def send_main_menu(context, chat_id, lang_id, message_id=None):
         )
 
 
-def send_category_buttons(categories, lang_id):
+def send_category_buttons(categories, lang_id, has_cart=False):
     buttons = []
     row = []
+    lang_code = globals.LANGUAGE_CODE[lang_id]
+    
     for i in range(len(categories)):
         row.append(
             InlineKeyboardButton(
-                text=categories[i][f'name_{globals.LANGUAGE_CODE[lang_id]}'],
+                text=categories[i][f'name_{lang_code}'],
                 callback_data=f"category_{categories[i]['id']}"
             )
         )
-
-        if len(row) == 2 or (len(categories) % 2 == 1 and i == len(categories) - 1):
+        if len(row) == 2:
             buttons.append(row)
             row = []
+
+    if row:
+        buttons.append(row)
+    
+    if has_cart:
+        buttons.append([InlineKeyboardButton(text=f"{globals.BTN_KORZINKA[lang_id]}", callback_data="cart")])
+
+    back_text = "❌ Bekor qilish" if lang_id == 1 else "❌ Отмена"
+    buttons.append([InlineKeyboardButton(text=back_text, callback_data="main_menu")])
+    
     return buttons
 
-def send_product_buttons(products, lang_id):
+def send_product_buttons(products, lang_id, has_cart=False):
     buttons = []
     row = []
+    lang_code = globals.LANGUAGE_CODE[lang_id]
     for i in range(len(products)):
         row.append(
             InlineKeyboardButton(
-                text=products[i][f'name_{globals.LANGUAGE_CODE[lang_id]}'],
+                text=products[i][f'name_{lang_code}'],
                 callback_data=f"category_product_{products[i]['id']}"
             )
         )
 
-        if len(row) == 2 or (len(products) % 2 == 1 and i == len(products) - 1):
+        if len(row) == 2:
             buttons.append(row)
             row = []
+
+    if row:
+        buttons.append(row)
+    
+    if has_cart:
+        buttons.append([InlineKeyboardButton(text=f"{globals.BTN_KORZINKA[lang_id]}", callback_data="cart")])
+
+    back_text = "❌ Bekor qilish" if lang_id == 1 else "❌ Отмена"
+    buttons.append([InlineKeyboardButton(text=back_text, callback_data="main_menu")])
 
     return buttons

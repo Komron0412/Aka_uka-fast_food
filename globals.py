@@ -112,6 +112,11 @@ BTN_SETTINGS = {
     2: "⚙️ Настройки"
 }
 
+TEXT_ORDER_ACCEPTED = {
+    1: "✅ Buyurtmangiz qabul qilindi! Yaqin orada operatorimiz siz bilan bog'lanadi. Iltimos, qo'ng'iroqni kuting.",
+    2: "✅ Ваш заказ принят! Наш оператор свяжется с вами в ближайшее время. Пожалуйста, ждите звонка."
+}
+
 
 # ============================================
 # 🛍️ CART & PRODUCTS
@@ -184,7 +189,7 @@ Buyurtma berish uchun mahsulotlarni tanlang.
 # ============================================
 
 BTN_CHECKOUT = {
-    1: "✅ Buyurtma berish",
+    1: "✅ Rasmiylashtirish",
     2: "✅ Оформить заказ"
 }
 

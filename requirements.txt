@@ -126,7 +126,7 @@ holoviews @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_
 hpack==3.0.0
 hstspreload==2025.1.1
 httpcore==1.0.9
-httpx==0.25.2
+httpx==0.28.1
 hvplot @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_c6l1nubo_c/croot/hvplot_1727775577392/work
 hyperframe==5.2.0
 hyperlink @ file:///tmp/build/80754af9/hyperlink_1610130746837/work
@@ -153,6 +153,7 @@ jaraco.classes @ file:///tmp/build/80754af9/jaraco.classes_1620983179379/work
 jedi @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_194648shy3/croot/jedi_1721058355221/work
 jellyfish @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/jellyfish_1699255065421/work
 Jinja2 @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_44yzu12j7f/croot/jinja2_1716993410427/work
+jiter==0.12.0
 jmespath @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/jmespath_1701804490553/work
 joblib @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_8ff7uji0v2/croot/joblib_1718217225309/work
 json5 @ file:///tmp/build/80754af9/json5_1624432770122/work
@@ -217,6 +218,7 @@ numba @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_adaw
 numexpr @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/numexpr_1699237935415/work
 numpy @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_a51i_mbs7m/croot/numpy_and_numpy_base_1708638620867/work/dist/numpy-1.26.4-cp312-cp312-macosx_11_0_arm64.whl#sha256=37afb6b734a197702d848df93bd67c10b52f6467d56e518950d84b6b1c949d27
 numpydoc @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_69xghc3i3n/croot/numpydoc_1718279166747/work
+openai==2.8.1
 openpyxl @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_96hhik4ygv/croot/openpyxl_1721752931204/work
 overrides @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/overrides_1701803470591/work
 packaging @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_81ri4yfpjw/croot/packaging_1720101866878/work
@@ -287,8 +289,9 @@ python-json-logger @ file:///Users/builder/cbouss/perseverance-python-buildout/c
 python-lsp-black @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_82mkiw3l7w/croot/python-lsp-black_1709232912184/work
 python-lsp-jsonrpc @ file:///croot/python-lsp-jsonrpc_1708962872556/work
 python-lsp-server @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_bdnoklk478/croot/python-lsp-server_1708971744028/work
+python-pptx==1.0.2
 python-slugify @ file:///tmp/build/80754af9/python-slugify_1620405669636/work
-python-telegram-bot==20.7
+python-telegram-bot==21.4
 pytoolconfig @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_c0c43xm9fv/croot/pytoolconfig_1701728714940/work
 pytz @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_a4b76c83ik/croot/pytz_1713974318928/work
 pyviz_comms @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_c98m0kf4qk/croot/pyviz_comms_1711136840525/work
@@ -396,6 +399,7 @@ wikipedia==1.4.0
 wrapt @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/wrapt_1699240702378/work
 wurlitzer @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/wurlitzer_1699265832005/work
 xarray @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/xarray_1699240726099/work
+xlsxwriter==3.2.9
 xlwings @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_1cs4qhgbiw/croot/xlwings_1725400081092/work
 xyzservices @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/xyzservices_1699243674756/work
 yapf @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_29ra4n2npe/croot/yapf_1708964324475/work
@@ -404,3 +408,4 @@ zict @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/zict_1699
 zipp @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/zipp_1707348942775/work
 zope.interface @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/zope.interface_1699243689919/work
 zstandard @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_cairdg5u3o/croot/zstandard_1728569200438/work
+aiosqlite==0.20.0

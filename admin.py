@@ -1,13 +1,11 @@
 import logging
 from typing import List, Dict
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
-from database import Database, dict_fetchall, dict_fetchone
+from db_instance import db
 import globals
-import methods
 from config import ADMIN_ID
 
 logger = logging.getLogger(__name__)
-db = Database("db-evos.db")
 
 
 async def admin_check(user_id: int) -> bool:
@@ -41,14 +39,15 @@ async def send_admin_menu(context, chat_id, lang_id):
 async def get_recent_orders(context, chat_id, lang_id, limit: int = 10):
     """Get and send recent orders"""
     try:
-        db.cur.execute("""
+        query = """
             SELECT o.*, u.first_name, u.last_name, u.phone_number 
             FROM "order" o 
             JOIN user u ON o.user_id = u.id 
             ORDER BY o.created_at DESC 
             LIMIT ?
-        """, (limit,))
-        orders = dict_fetchall(db.cur)
+        """
+        async with db.conn.execute(query, (limit,)) as cursor:
+            orders = [dict(row) for row in await cursor.fetchall()]
         
         if not orders:
             await context.bot.send_message(
@@ -58,7 +57,7 @@ async def get_recent_orders(context, chat_id, lang_id, limit: int = 10):
             return
         
         for order in orders:
-            status_text = db.get_order_status_text(order['status'], lang_id)
+            status_text = globals.ORDER_STATUS[lang_id].get(order['status'], "N/A")
             
             text = f"""
 📋 Buyurtma #{order['id']}
@@ -97,13 +96,15 @@ async def get_order_details(context, chat_id, order_id: int, lang_id: int):
     """Get detailed order information"""
     try:
         # Get order info
-        db.cur.execute("""
+        query = """
             SELECT o.*, u.first_name, u.last_name, u.phone_number 
             FROM "order" o 
             JOIN user u ON o.user_id = u.id 
             WHERE o.id = ?
-        """, (order_id,))
-        order = dict_fetchone(db.cur)
+        """
+        async with db.conn.execute(query, (order_id,)) as cursor:
+            row = await cursor.fetchone()
+            order = dict(row) if row else None
         
         if not order:
             await context.bot.send_message(
@@ -113,9 +114,9 @@ async def get_order_details(context, chat_id, order_id: int, lang_id: int):
             return
         
         # Get order products
-        products = db.get_order_products(order_id)
+        products = await db.get_order_products(order_id)
         
-        status_text = db.get_order_status_text(order['status'], lang_id)
+        status_text = globals.ORDER_STATUS[lang_id].get(order['status'], "N/A")
         
         text = f"""
 📋 Buyurtma #{order['id']}
@@ -165,7 +166,8 @@ async def update_order_status(context, order_id: int, status: int, lang_id: int)
     """Update order status and notify user"""
     try:
         # Update order status
-        success = db.update_order_status(order_id, status)
+        await db.update_order_status(order_id, status)
+        success = True
         
         if not success:
             await context.bot.send_message(
@@ -176,24 +178,28 @@ async def update_order_status(context, order_id: int, status: int, lang_id: int)
         
         # Get order and user info
         try:
-            db.cur.execute("""
+            query = """
                 SELECT o.*, u.chat_id, u.lang_id 
                 FROM "order" o 
                 JOIN user u ON o.user_id = u.id 
                 WHERE o.id = ?
-            """, (order_id,))
-            order = dict_fetchone(db.cur)
+            """
+            async with db.conn.execute(query, (order_id,)) as cursor:
+                row = await cursor.fetchone()
+                order = dict(row) if row else None
         except Exception:
             # Fallback for older database structure
-            db.cur.execute("""
+            query = """
                 SELECT o.*, u.chat_id, u.lang_id 
                 FROM "order" o, user u 
                 WHERE o.user_id = u.id AND o.id = ?
-            """, (order_id,))
-            order = dict_fetchone(db.cur)
+            """
+            async with db.conn.execute(query, (order_id,)) as cursor:
+                row = await cursor.fetchone()
+                order = dict(row) if row else None
         
         if order:
-            status_text = db.get_order_status_text(status, order['lang_id'])
+            status_text = globals.ORDER_STATUS[order['lang_id']].get(status, "N/A")
             
             # Send notification to user
             notification_texts = {
@@ -213,7 +219,7 @@ async def update_order_status(context, order_id: int, status: int, lang_id: int)
         # Confirm to admin
         await context.bot.send_message(
             chat_id=ADMIN_ID,
-            text=f"✅ Buyurtma #{order_id} holati yangilandi: {db.get_order_status_text(status, lang_id)}"
+            text=f"✅ Buyurtma #{order_id} holati yangilandi: {globals.ORDER_STATUS[lang_id].get(status, 'N/A')}"
         )
         
     except Exception as e:
@@ -228,47 +234,55 @@ async def get_statistics(context, chat_id, lang_id):
     """Get and send bot statistics"""
     try:
         # Total orders
-        db.cur.execute("SELECT COUNT(*) as count FROM 'order'")
-        total_orders = dict_fetchone(db.cur)['count']
+        async with db.conn.execute("SELECT COUNT(*) as count FROM 'order'") as cursor:
+            row = await cursor.fetchone()
+            total_orders = row['count']
         
         # Today's orders
-        db.cur.execute("""
+        query = """
             SELECT COUNT(*) as count FROM "order" 
             WHERE DATE(created_at) = DATE('now')
-        """)
-        today_orders = dict_fetchone(db.cur)['count']
+        """
+        async with db.conn.execute(query) as cursor:
+            row = await cursor.fetchone()
+            today_orders = row['count']
         
         # Total revenue - check if total_amount column exists
         try:
-            db.cur.execute("PRAGMA table_info('order')")
-            columns = [column[1] for column in db.cur.fetchall()]
+            async with db.conn.execute("PRAGMA table_info('order')") as cursor:
+                rows = await cursor.fetchall()
+                columns = [column['name'] for column in rows]
             
             if 'total_amount' in columns:
-                db.cur.execute("""
+                query = """
                     SELECT SUM(total_amount) as total FROM "order" 
                     WHERE status = 5
-                """)
-                result = dict_fetchone(db.cur)
-                total_revenue = result['total'] if result['total'] else 0
+                """
+                async with db.conn.execute(query) as cursor:
+                    row = await cursor.fetchone()
+                    total_revenue = row['total'] if row['total'] else 0
             else:
                 # Calculate from order_products if total_amount doesn't exist
-                db.cur.execute("""
-                    SELECT SUM(op.quantity * p.price) as total FROM "order" o
-                    JOIN order_products op ON o.id = op.order_id
+                query = """
+                    SELECT SUM(op.amount * p.price) as total FROM "order" o
+                    JOIN order_product op ON o.id = op.order_id
                     JOIN product p ON op.product_id = p.id
                     WHERE o.status = 5
-                """)
-                result = dict_fetchone(db.cur)
-                total_revenue = result['total'] if result['total'] else 0
+                """
+                async with db.conn.execute(query) as cursor:
+                    row = await cursor.fetchone()
+                    total_revenue = row['total'] if row['total'] else 0
         except Exception:
             total_revenue = 0
         
         # Active users
-        db.cur.execute("""
+        query = """
             SELECT COUNT(DISTINCT user_id) as count FROM "order" 
             WHERE DATE(created_at) >= DATE('now', '-7 days')
-        """)
-        active_users = dict_fetchone(db.cur)['count']
+        """
+        async with db.conn.execute(query) as cursor:
+            row = await cursor.fetchone()
+            active_users = row['count']
         
         text = f"""
 📊 Bot statistikasi:
@@ -295,8 +309,8 @@ async def get_statistics(context, chat_id, lang_id):
 async def send_broadcast_message(context, chat_id, message_text: str, lang_id: int):
     """Send broadcast message to all users"""
     try:
-        db.cur.execute("SELECT chat_id FROM user WHERE is_blocked = 0")
-        users = dict_fetchall(db.cur)
+        async with db.conn.execute("SELECT chat_id FROM user") as cursor:
+            users = [dict(row) for row in await cursor.fetchall()]
         
         sent_count = 0
         failed_count = 0

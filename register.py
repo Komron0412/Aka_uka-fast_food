@@ -6,10 +6,10 @@ import methods
 
 async def check(update, context):
     user = update.message.from_user
-    db_user = db.get_user_by_chat_id(user.id)
+    db_user = await db.get_user_by_chat_id(user.id)
 
     if not db_user:
-        db.create_user(user.id)
+        await db.create_user(user.id)
         buttons = [
             [KeyboardButton(text=globals.BTN_LANG_UZ), KeyboardButton(text=globals.BTN_LANG_RU)]
         ]
@@ -65,13 +65,13 @@ async def check(update, context):
 def check_data_decorator(func):
     async def inner(update, context):
         user = update.message.from_user
-        db_user = db.get_user_by_chat_id(user.id)
+        db_user = await db.get_user_by_chat_id(user.id)
         state = context.user_data.get("state", 0)
 
         if state != globals.STATES['reg']:
 
             if not db_user:
-                db.create_user(user.id)
+                await db.create_user(user.id)
                 buttons = [
                     [KeyboardButton(text=globals.BTN_LANG_UZ), KeyboardButton(text=globals.BTN_LANG_RU)]
                 ]
