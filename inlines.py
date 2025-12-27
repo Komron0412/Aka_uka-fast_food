@@ -258,7 +258,6 @@ async def inline_handler(update, context):
                 if len(data_sp) == 3:
                     parent_id = int(data_sp[2])
                 else:
-                    print("No parent")
                     parent_id = None
 
                 categories = await db.get_categories_by_parent(parent_id=parent_id)

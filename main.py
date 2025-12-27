@@ -1,5 +1,6 @@
-from telegram.ext import  (CommandHandler, CallbackQueryHandler, MessageHandler, filters,
-                           ApplicationBuilder)
+import asyncio
+from telegram.ext import (CommandHandler, CallbackQueryHandler, MessageHandler, filters,
+                          ApplicationBuilder)
 
 from config import ADMIN_ID
 from db_instance import db
@@ -10,10 +11,6 @@ from telegram import ReplyKeyboardRemove
 from config import TOKEN
 import globals
 import methods
-
-
-
-
 async def start_handler(update, context):
     if "carts" in context.user_data:
         context.user_data.pop("carts")
@@ -98,5 +95,4 @@ async def main():
 
 
 if __name__ == '__main__':
-    import asyncio
     asyncio.run(main())
