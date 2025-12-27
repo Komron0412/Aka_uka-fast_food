@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: fast_food_bot
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./db-evos.db:/app/db-evos.db
+      - ./images:/app/images
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
